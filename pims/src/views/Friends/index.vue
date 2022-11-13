@@ -83,7 +83,7 @@ export default {
                 const res = await this.$http.put('address/insert', this.addForm).then(res => {
                     console.log(res);
                     this.addFormVisible = false
-                    this.tableData.push(this.addForm)
+                    this.tableData.push(res.data.data)
                     // this.$router.go(0)
                     this.$message({
                         type: 'success',

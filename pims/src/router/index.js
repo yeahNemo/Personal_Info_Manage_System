@@ -27,6 +27,11 @@ const routes = [
         path: 'todo',
         name: 'todo',
         component: () => import('@/views/TodoList')
+      },
+      {
+        path: 'memo',
+        name: 'memo',
+        component: () => import('@/views/Memo')
       }
     ]
   },

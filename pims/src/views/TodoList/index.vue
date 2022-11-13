@@ -10,7 +10,7 @@
                     <el-date-picker style="margin-right:1rem" v-model="missionObj.startDate" type="date"
                         value-format="yyyy-MM-dd" placeholder="开始日期">
                     </el-date-picker>
-                    <el-date-picker v-model="missionObj.startDate" type="date" value-format="yyyy-MM-dd"
+                    <el-date-picker v-model="missionObj.endDate" type="date" value-format="yyyy-MM-dd"
                         placeholder="结束日期">
                     </el-date-picker>
                 </div>
@@ -42,55 +42,53 @@
 
 <script>
 export default {
+    async created() {
+        const res = await this.$http.get(`schedule/getAll/${localStorage.getItem('userId')}`)
+        this.missionList = res.data.data
+        // console.log(res);
+
+
+    },
     data() {
         return {
-            missionList: [
-                {
-                    endDate: '2022-1-17',
-                    startDate: '2002-1-17',
-                    plan: '吃饭'
-                }
-            ],
+            missionList: [],
             missionObj: {
                 plan: '',
                 endDate: '',
                 startDate: '',
-                finished: false,
+                finished: 0,
                 userId: localStorage.getItem('userId')
             },
-            selectedRowId: ''
+            selectedRow: null
         }
     },
     methods: {
         delMission() {
-            if (this.selectedRowId === '') {
+            if (this.selectedRow === null) {
                 this.$message({
                     type: 'error',
                     message: '请选择一项'
                 })
                 return
             } else {
-                // TODO 调用删除的API
+                console.log(this.selectedRow);
+                this.$http.delete(`schedule/delete/${this.selectedRow.id}`).then(res => {
+                    console.log(res);
+                    // 前端删除
+                    this.missionList = this.missionList.filter(item => item.id !== this.selectedRow.id)
+                }).catch(e => {
+                    console.log(e);
+                })
             }
         },
         handleCurrentChange(currentRow, oldRow) {
-            console.log(currentRow, oldRow);
+            this.selectedRow = currentRow
 
         },
         async addMission() {
-            // TODO 判断输入这里写错了
-            if (this.missionObj === {}) {
-                this.$message({
-                    type: 'error',
-                    message: '请输入内容'
-                })
-                return
-            } else {
-                // const res = await this.$http.put('schedule/insert', this.missionObj)
-                let obj = {}
-                obj = Object.assign(obj, this.missionObj)
-                this.missionList.push(obj)
-            }
+            const res = await this.$http.put('schedule/insert', this.missionObj)
+            console.log(res);
+            this.missionList.push(obj.data.data)
         }
     },
 }

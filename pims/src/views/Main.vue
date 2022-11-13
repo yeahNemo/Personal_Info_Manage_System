@@ -11,7 +11,7 @@
                             通讯录好友
                         </el-menu-item>
 
-                        <el-menu-item index="/item/create">备忘录管理</el-menu-item>
+                        <el-menu-item index="/home/memo">备忘录管理</el-menu-item>
                         <el-menu-item index="/home/todo">任务计划管理</el-menu-item>
 
                         <el-menu-item index="/hero/create">个人财务管理</el-menu-item>

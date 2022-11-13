@@ -13,23 +13,22 @@
             <div slot="header" class="clearfix">
                 <span>{{ item.date }}</span>
                 <el-button style="float: right; padding: 8px 8px" type="danger" @click="delMemo(item.id)">删除</el-button>
-                <el-button style="float: right; padding: 8px 8px; margin-right: 5px;" type="primary"
-                    @click="editMemo(item)">修改
-                </el-button>
             </div>
             <div class="text-item">
-                <span v-html="item.detail"></span>
+                <div class="markdown-body" v-html="msgHtml"></div>
+                <el-button style=" float: right; padding: 8px 8px" type="primary" @click="editMemo(item)">修改
+                </el-button>
             </div>
         </el-card>
 
 
-        <el-dialog title="添加备忘录" :visible.sync="addDialogVisible" width="70%" @close="addDialogClosed">
+        <el-dialog title="添加备忘录" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
 
             <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
 
                 <el-form-item label="内容" prop="detail">
                     <!-- <el-input type="textarea" autosize v-model="addForm.detail"></el-input> -->
-                    <mavon-editor @change="change" v-model="content" />
+                    <mavon-editor v-model="addForm.detail" />
                 </el-form-item>
 
             </el-form>
@@ -45,11 +44,18 @@
     
 <script>
 import moment from 'moment'
+import { marked } from 'marked'
 export default {
     created() {
         this.getlist()
     },
     data() {
+        const msg = '```\n' +
+            'public static void main(String[] args) {\n' +
+            '\tSystem.out.println("Hello World!!!");\n' +
+            '}\n' +
+            '```'
+        msgHtml = marked(msg)
         return {
             datalist: [],
             addDialogVisible: false,
@@ -65,14 +71,11 @@ export default {
             },
             isEdit: false,
             memoToEdit: null,
-            content: ''
+            msgHtml
         }
+
     },
     methods: {
-        change(value, render) {
-            // render 为 markdown 解析后的结果
-            this.addForm.detail = render
-        },
         editMemo(item) {
             this.isEdit = true
             this.addDialogVisible = true
@@ -125,9 +128,12 @@ export default {
         addclick() {
             this.addDialogVisible = true
         },
+
         addDialogClosed() {
+
         }
     }
+
 }
 </script>
     

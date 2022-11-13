@@ -21,25 +21,25 @@
         </el-table>
 
         <el-dialog :title="isAdd ? '添加联系人' : '编辑联系人'" :visible.sync="addFormVisible" width="45%">
-            <el-form :model="addForm">
+            <el-form :model="addForm" :rules="addFormRule" ref="addForm">
                 <el-row class="form-row">
-                    <el-col :span="6">
-                        <el-form-item label="姓名" :label-width="formLabelWidth">
+                    <el-col :span="10">
+                        <el-form-item label="姓名" prop="name" :label-width="formLabelWidth">
                             <el-input v-model="addForm.name" autocomplete="off"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
 
                 <el-row class="form-row">
-                    <el-col :span="10">
-                        <el-form-item label="电话" :label-width="formLabelWidth">
+                    <el-col :span="14">
+                        <el-form-item label="电话" prop="telenum" :label-width="formLabelWidth">
                             <el-input v-model="addForm.telenum" autocomplete="off"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row class="form-row">
-                    <el-col :span="10">
-                        <el-form-item label="备注" :label-width="formLabelWidth">
+                    <el-col :span="14">
+                        <el-form-item label="备注" prop="detail" :label-width="formLabelWidth">
                             <el-input v-model="addForm.detail" autocomplete="off"></el-input>
                         </el-form-item>
                     </el-col>
@@ -71,52 +71,74 @@ export default {
                 telenum: '',
                 detail: ''
             },
-            formLabelWidth: '50px',
+            formLabelWidth: '100px',
             // 判断是编辑还是添加联系人
-            isAdd: true
+            isAdd: true,
+            // 表单规则验证
+            addFormRule: {
+                name: [
+                    { required: true, message: "内容不能为空！", trigger: "blur" }
+                ],
+                telenum: [
+                    { required: true, message: "内容不能为空！", trigger: "blur" }
+                ],
+                detail: [
+                    { required: true, message: "内容不能为空！", trigger: "blur" }
+                ]
+            }
         }
     },
     methods: {
         // TODO 增删改
         async handleFriend() {
-            if (this.isAdd) {
-                const res = await this.$http.put('address/insert', this.addForm).then(res => {
-                    console.log(res);
-                    this.addFormVisible = false
-                    this.tableData.push(res.data.data)
-                    // this.$router.go(0)
-                    this.$message({
-                        type: 'success',
-                        message: '操作成功！'
-                    })
-                    // 重置addForm data内容
-                    this.addForm = this.$options.data().addForm
-                }).catch(e => {
-                    this.$message({
-                        type: 'error',
-                        message: '操作失败！'
-                    })
-                })
-            } else {
-                // 修改联系人API
-                console.log(this.addForm);
-                const res = await this.$http.put('address/update', this.addForm).then(res => {
-                    console.log(res);
-                    this.addFormVisible = false
-                    this.$message({
-                        type: 'success',
-                        message: '操作成功！'
-                    })
-                    // 重置addForm data内容
-                    this.addForm = this.$options.data().addForm
-                }).catch(e => {
-                    this.$message({
-                        type: 'error',
-                        message: '操作失败！'
-                    })
-                })
+            this.$refs['addForm'].validate(async valid => {
+                if (valid) {
+                    if (this.isAdd) {
+                        const res = await this.$http.put('address/insert', this.addForm).then(res => {
+                            console.log(res);
+                            this.addFormVisible = false
+                            this.tableData.push(res.data.data)
+                            // this.$router.go(0)
+                            this.$message({
+                                type: 'success',
+                                message: '操作成功！'
+                            })
+                            // 重置addForm data内容
+                            this.addForm = this.$options.data().addForm
+                        }).catch(e => {
+                            this.$message({
+                                type: 'error',
+                                message: '操作失败！'
+                            })
+                        })
+                    } else {
+                        // 修改联系人API
+                        console.log(this.addForm);
+                        const res = await this.$http.put('address/update', this.addForm).then(res => {
+                            console.log(res);
+                            this.addFormVisible = false
+                            this.$message({
+                                type: 'success',
+                                message: '操作成功！'
+                            })
+                            // 重置addForm data内容
+                            this.addForm = this.$options.data().addForm
+                        }).catch(e => {
+                            this.$message({
+                                type: 'error',
+                                message: '操作失败！'
+                            })
+                        })
 
-            }
+                    }
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '内容不可为空！'
+                    })
+                }
+            })
+
 
         },
         editBtn(obj) {

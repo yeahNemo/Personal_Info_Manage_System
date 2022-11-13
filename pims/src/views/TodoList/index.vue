@@ -1,21 +1,35 @@
 <template>
     <div>
         <el-card header="任务列表">
-            <div class="mission-input">
-                <div>
-                    <el-input v-model="missionObj.plan" placeholder="请输入任务">
-                    </el-input>
+            <el-form :model="missionObj" ref="addForm" :rules="addFormRules">
+                <div class="mission-input">
+                    <div>
+                        <el-form-item prop="plan">
+                            <el-input v-model="missionObj.plan" placeholder="请输入任务">
+                            </el-input>
+                        </el-form-item>
+                    </div>
+                    <div style="margin-top:1rem; margin-bottom: 1rem;">
+                        <el-form-item prop="startDate">
+                            <el-date-picker style="margin-right:1rem" v-model="missionObj.startDate" type="date"
+                                value-format="yyyy-MM-dd" placeholder="开始日期">
+                            </el-date-picker>
+                        </el-form-item>
+
+                        <el-form-item prop="endDate">
+                            <el-date-picker v-model="missionObj.endDate" type="date" value-format="yyyy-MM-dd"
+                                placeholder="结束日期">
+                            </el-date-picker>
+                        </el-form-item>
+
+                    </div>
                 </div>
-                <div style="margin-top:1rem; margin-bottom: 1rem;">
-                    <el-date-picker style="margin-right:1rem" v-model="missionObj.startDate" type="date"
-                        value-format="yyyy-MM-dd" placeholder="开始日期">
-                    </el-date-picker>
-                    <el-date-picker v-model="missionObj.endDate" type="date" value-format="yyyy-MM-dd"
-                        placeholder="结束日期">
-                    </el-date-picker>
-                </div>
-            </div>
-            <el-button size="small" type="primary" @click="addMission">添加任务</el-button>
+                <el-form-item>
+                    <el-button size="small" type="primary" @click="addMission('addForm')">添加任务</el-button>
+                </el-form-item>
+
+            </el-form>
+
             <hr style="margin-top:2rem;margin-bottom:2rem">
             <h3>我的任务</h3>
             <div>
@@ -59,7 +73,18 @@ export default {
                 finished: 0,
                 userId: localStorage.getItem('userId')
             },
-            selectedRow: null
+            selectedRow: null,
+            addFormRules: {
+                plan: [
+                    { required: true, message: '内容不能为空', trigger: 'blur' },
+                ],
+                endDate: [
+                    { required: true, message: '内容不能为空', trigger: 'blur' },
+                ],
+                startDate: [
+                    { required: true, message: '内容不能为空', trigger: 'blur' },
+                ],
+            },
         }
     },
     methods: {
@@ -85,10 +110,31 @@ export default {
             this.selectedRow = currentRow
 
         },
-        async addMission() {
-            const res = await this.$http.put('schedule/insert', this.missionObj)
-            console.log(res);
-            this.missionList.push(obj.data.data)
+        async addMission(formName) {
+            this.$refs[formName].validate(async (valid) => {
+                if (valid) {
+                    const res = await this.$http.put('schedule/insert', this.missionObj).then(res => {
+                        console.log(res);
+                        this.missionList.push(res.data.data)
+                        this.$message({
+                            type: 'success',
+                            message: '操作成功'
+                        })
+                    }).catch(e => {
+                        this.$message({
+                            type: 'error',
+                            message: '出错'
+                        })
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '请正确填写'
+                    })
+                }
+            });
+
+
         }
     },
 }

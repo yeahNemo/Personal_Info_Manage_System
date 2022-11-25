@@ -14,6 +14,10 @@ const routes = [
     component: () => import('@/views/Main'),
     children: [
       {
+        path: '/',
+        redirect: 'me'
+      },
+      {
         path: 'friend',
         name: 'friend',
         component: () => import('@/views/Friends')

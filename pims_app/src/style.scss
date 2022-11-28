@@ -1,0 +1,7 @@
+$animationDuration: 0.8s; // specify animation duration. Default value: 1s 
+@import "vue2-animate/src/sass/vue2-animate.scss";
+.my-btn {
+    height: 2.2rem;
+    margin: 1rem 0 0 2rem;
+    border-radius: 1.2rem;
+}

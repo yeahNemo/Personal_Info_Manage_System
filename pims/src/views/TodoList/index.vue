@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <el-form-item>
-                    <el-button size="small" type="primary" @click="addMission('addForm')">添加任务</el-button>
+                    <el-button size="small" type="primary" @click="saveMission('addForm')">保存</el-button>
                 </el-form-item>
 
             </el-form>
@@ -46,7 +46,7 @@
                 </el-table>
             </div>
             <el-row type="flex" style="margin-top:1rem">
-                <el-button type="success" style="margin-right:1rem">完成</el-button>
+                <el-button type="success" @click="editMission" style="margin-right:1rem">编辑</el-button>
                 <el-button type="warning" @click="delMission">删除</el-button>
             </el-row>
         </el-card>
@@ -59,9 +59,6 @@ export default {
     async created() {
         const res = await this.$http.get(`schedule/getAll/${localStorage.getItem('userId')}`)
         this.missionList = res.data.data
-        // console.log(res);
-
-
     },
     data() {
         return {
@@ -88,6 +85,18 @@ export default {
         }
     },
     methods: {
+        editMission() {
+            if (this.selectedRow === null) {
+                this.$message({
+                    type: 'error',
+                    message: '请选择一项'
+                })
+                return
+            } else {
+                this.missionObj = this.selectedRow
+                this.isEdit = true
+            }
+        },
         delMission() {
             if (this.selectedRow === null) {
                 this.$message({
@@ -110,31 +119,55 @@ export default {
             this.selectedRow = currentRow
 
         },
-        async addMission(formName) {
-            this.$refs[formName].validate(async (valid) => {
-                if (valid) {
-                    const res = await this.$http.put('schedule/insert', this.missionObj).then(res => {
-                        console.log(res);
-                        this.missionList.push(res.data.data)
-                        this.$message({
-                            type: 'success',
-                            message: '操作成功'
+        async saveMission(formName) {
+            if (this.isEdit) {
+                this.$refs[formName].validate(async (valid) => {
+                    if (valid) {
+                        const res = await this.$http.put('schedule/update', this.missionObj).then(res => {
+                            console.log(res);
+                            this.selectedRow = this.missionObj
+                            this.$message({
+                                type: 'success',
+                                message: '操作成功'
+                            })
+                        }).catch(e => {
+                            this.$message({
+                                type: 'error',
+                                message: '出错'
+                            })
                         })
-                    }).catch(e => {
+                    } else {
                         this.$message({
                             type: 'error',
-                            message: '出错'
+                            message: '请正确填写'
                         })
-                    })
-                } else {
-                    this.$message({
-                        type: 'error',
-                        message: '请正确填写'
-                    })
-                }
-            });
-
-
+                    }
+                });
+                isEdit = false
+            } else {
+                this.$refs[formName].validate(async (valid) => {
+                    if (valid) {
+                        const res = await this.$http.put('schedule/insert', this.missionObj).then(res => {
+                            console.log(res);
+                            this.missionList.push(res.data.data)
+                            this.$message({
+                                type: 'success',
+                                message: '操作成功'
+                            })
+                        }).catch(e => {
+                            this.$message({
+                                type: 'error',
+                                message: '出错'
+                            })
+                        })
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: '请正确填写'
+                        })
+                    }
+                });
+            }
         }
     },
 }

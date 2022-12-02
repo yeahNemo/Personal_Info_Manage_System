@@ -1,58 +1,63 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from "vue";
+import VueRouter from "vue-router";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    redirect: '/login'
+    path: "/",
+    redirect: "/login",
   },
   {
-    path: '/home',
-    name: 'home',
-    component: () => import('@/views/Main'),
+    path: "/home",
+    name: "home",
+    component: () => import("@/views/Main"),
     children: [
       {
-        path: '/',
-        redirect: 'me'
+        path: "/",
+        redirect: "me",
       },
       {
-        path: 'friend',
-        name: 'friend',
-        component: () => import('@/views/Friends')
+        path: "friend",
+        name: "friend",
+        component: () => import("@/views/Friends"),
       },
       {
-        path: 'me',
-        name: 'me',
-        component: () => import('@/views/Me')
+        path: "me",
+        name: "me",
+        component: () => import("@/views/Me"),
       },
       {
-        path: 'todo',
-        name: 'todo',
-        component: () => import('@/views/TodoList')
+        path: "todo",
+        name: "todo",
+        component: () => import("@/views/TodoList"),
       },
       {
-        path: 'memo',
-        name: 'memo',
-        component: () => import('@/views/Memo')
-      }
-    ]
+        path: "memo",
+        name: "memo",
+        component: () => import("@/views/Memo"),
+      },
+      {
+        path: "account",
+        name: "account",
+        component: () => import("@/views/Account"),
+      },
+    ],
   },
   {
-    path: '/login',
-    name: 'login',
-    component: () => import('@/views/Login')
+    path: "/login",
+    name: "login",
+    component: () => import("@/views/Login"),
   },
   {
-    path: '/register',
-    name: 'register',
-    component: () => import('@/views/Register')
-  }
-]
+    path: "/register",
+    name: "register",
+    component: () => import("@/views/Register"),
+  },
+];
 
 const router = new VueRouter({
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

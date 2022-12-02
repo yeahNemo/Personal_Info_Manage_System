@@ -14,8 +14,10 @@
                         <el-menu-item index="/home/memo">备忘录管理</el-menu-item>
                         <el-menu-item index="/home/todo">任务计划管理</el-menu-item>
 
-                        <el-menu-item index="/hero/create">个人财务管理</el-menu-item>
-                        <el-menu-item index="/hero/list">个人报表管理</el-menu-item>
+                        <el-menu-item index="/home/account">个人财务管理</el-menu-item>
+                        <el-menu-item @click="toDownload">
+                            个人报表下载
+                        </el-menu-item>
                     </el-menu-item-group>
                 </el-submenu>
             </el-menu>
@@ -42,7 +44,15 @@ export default {
         return {
             userName: 'zjz'
         }
-    }
+    },
+    methods: {
+        toDownload() {
+            console.log('点击了');
+            window.open(
+                'http://localhost:8081/info/export'
+            );
+        }
+    },
 };
 </script>
 

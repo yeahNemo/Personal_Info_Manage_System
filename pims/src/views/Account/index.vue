@@ -4,8 +4,6 @@
             添加记录
         </el-button>
         <el-table :data="tableData" style="width: 100%; margin-bottom: 1rem;">
-            <el-table-column prop="id" label="编号" width="180">
-            </el-table-column>
             <el-table-column prop="date" label="时间" width="180">
             </el-table-column>
             <el-table-column prop="name" label="物品名称">

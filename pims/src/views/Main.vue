@@ -47,7 +47,6 @@ export default {
     },
     methods: {
         toDownload() {
-            console.log('点击了');
             window.open(
                 'http://localhost:8081/info/export'
             );
